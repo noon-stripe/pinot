@@ -54,6 +54,7 @@ import org.apache.pinot.segment.local.utils.FixedIntArrayOffHeapIdMap;
 import org.apache.pinot.segment.local.utils.GeometrySerializer;
 import org.apache.pinot.segment.local.utils.IdMap;
 import org.apache.pinot.segment.local.utils.IngestionUtils;
+import org.apache.pinot.segment.local.utils.preaggregation.PreAggregator;
 import org.apache.pinot.segment.spi.MutableSegment;
 import org.apache.pinot.segment.spi.SegmentMetadata;
 import org.apache.pinot.segment.spi.datasource.DataSource;
@@ -126,6 +127,7 @@ public class MutableSegmentImpl implements MutableSegment {
 
   private final IdMap<FixedIntArray> _recordIdMap;
   private boolean _aggregateMetrics;
+  private final PreAggregator _preAggregator;
 
   private volatile int _numDocsIndexed = 0;
   private final int _numKeyColumns;
@@ -192,6 +194,7 @@ public class MutableSegmentImpl implements MutableSegment {
     _partitionFunction = config.getPartitionFunction();
     _nullHandlingEnabled = config.isNullHandlingEnabled();
     _aggregateMetrics = config.aggregateMetrics();
+    _preAggregator = PreAggregator.fromRealtimeSegmentConfig(config);
 
     Collection<FieldSpec> allFieldSpecs = _schema.getAllFieldSpecs();
     List<FieldSpec> physicalFieldSpecs = new ArrayList<>(allFieldSpecs.size());
